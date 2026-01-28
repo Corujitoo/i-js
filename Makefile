@@ -1,3 +1,5 @@
+COMAND ?- start
+
 up:
 	docker compose up --build
 
