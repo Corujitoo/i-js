@@ -272,28 +272,148 @@ class Catalogo {
 // Sugestão: use Map sku -> ItemCarrinho
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
 
+
+
 class CarrinhoDeCompras {
-    constructor({ catalogo, estoque }) {
-        // TODO
-        throw new Error("TODO: implementar CarrinhoDeCompras");
+	constructor({ catalogo, estoque }) {
+		this.catalogo = catalogo; // Catalogo
+        this.estoque = estoque; // Estoque
+        this.carrinho = new Map(); //Map {"<sku>": <quantidade>} // {"sku1": 3, "sku2": 5}
+	}
+
+    // adicionarItem("sku existente e presente no carrinho", 5)
+	adicionarItem(sku, quantidade) { // sku: "sku2" quantidade: 3
+		// Verificar se o sku existe no estoque
+        const quantidadeEmEstoque = this.estoque.getQuantidade(sku);
+
+        if (quantidade > quantidadeEmEstoque) {
+            // Caso não exista retornar erro
+            throw new Error("Quantidade solicitada maior que a quantidade disponível em estoque!")
+        }
+
+        // Daqui em diante, quantidade é menor ou igual a quantidadeEmEstoque
+
+        // Verificar se sku existe em this.carrinho
+        const skus = this.carrinho.keys() // ["sku1", "sku2"]
+        const existeNoCarrinho = skus.includes(sku) // booleano -> True or False
+
+        let novoValorDoSku = 0;
+        // Caso exista incrementar valor atual
+        if (existeNoCarrinho) {
+            console.log("O item se encontra no carrinho! Incrementando quantidade!")
+            const valorAtualDoSku = this.carrinho.get(sku); // 5
+            novoValorDoSku = valorAtualDoSku + quantidade;
+        // Caso não exista Adicionar sku ao this.carrinho e atribuir quantidade
+        } else {
+            console.log("O item não se encontra no carrinho! Criando e atribuindo quantidade!")
+            novoValorDoSku = quantidade;
+        }
+
+        this.carrinho.set(sku, novoValorDoSku);
+        this.estoque.remover(sku, quantidade);
+	}
+
+	removerItem(sku) {
+		// TODO
+		throw new Error("TODO: implementar removerItem");
+	}
+
+	alterarQuantidade(sku, novaQuantidade) {
+		// TODO
+		throw new Error("TODO: implementar alterarQuantidade");
+	}
+
+	listarItens() {
+		// TODO
+		throw new Error("TODO: implementar listarItens");
+	}
+
+	getSubtotal() {
+		// TODO
+		throw new Error("TODO: implementar getSubtotal");
+	}
+}
+
+
+ const catalogo = new Catalogo();
+ const estoque = new Estoque();
+const carrinho = new CarrinhoDeCompras({
+    catalogo: catalogo,
+    estoque: estoque})
+
+class Garrafa {
+    constructor(conteudo) {
+        this.conteudo = conteudo;
+    }
+
+    setConteudo(novoConteudo) {
+        this.conteudo = novoConteudo;
+    }
+
+    servir () {
+        console.log("Servindo" + this.conteudo)
+    }
+}
+
+const garrafaDoBruno = new Garrafa("agua");
+const garrafaDoPaulo = new Garrafa("vodka");
+
+garrafaDoPaulo.conteudo = "vinho"
+garrafaDoPaulo.servir()
+
+garrafaDoPaulo.servir()
+
+
+class CarrinhoDeCompras {
+    constructor(estoqueAtual) {
+        this.estoque = estoqueAtual;
+    }
+
+    getQuantidade(sku) {
+        throw new Error();
+    }
+
+    definirQuantidade(sku, quantidade) {
+        throw new Error();
     }
 
     adicionarItem(sku, quantidade) {
-        // TODO
-        throw new Error("TODO: implementar adicionarItem");
+       assertNonNegativeInt(quantidade, "Quantidade a ser adicionada");
+        const quantidadeAtual = this.getQuantidade(sku);
+        this.definirQuantidade(sku, quantidadeAtual + quantidade);
     }
 
-    removerItem(sku) {
-        // TODO
-        throw new Error("TODO: implementar removerItem");
+    garantirDisponibilidade(sku, quantidade) {
+        throw new Error();
+    }
+
+    removerItem(sku, quantidade) {
+        this.garantirDisponibilidade(sku, quantidade);
+        const estoqueAtual = this.getQuantidade(sku);
+        const novoEstoque = estoqueAtual - quantidade;
+
+        if (novoEstoque === 0) {
+            
+
+
+
+
+            this.estoque.delete(sku);
+        } else {
+            this.estoque.set(sku, novoEstoque)
+        }
+        console.logo(`Removido ${quantidae} do SKU ${sku}. Saldo atual: ${novoEstoque}`);
     }
 
     alterarQuantidade(sku, novaQuantidade) {
-        // TODO
-        throw new Error("TODO: implementar alterarQuantidade");
-    }
+        this.novaQuantidade(sku, novaQuantidade);
+        const novaQuantidade = ("Qual quantidade deseja levar?")
 
-    listarItens() {
+        
+    
+    
+    }
+     listarItens() {
         // TODO
         throw new Error("TODO: implementar listarItens");
     }
