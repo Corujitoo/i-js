@@ -314,117 +314,66 @@ class CarrinhoDeCompras {
 	}
 
 	removerItem(sku) {
-		// TODO
-		throw new Error("TODO: implementar removerItem");
-	}
+        if (!this.carrinho.has(sku)) {
+            throw new Error("Item não encontrado no carrinho!");
+        }
+        const quantidade = this.carrinho.get(sku);
+        this.carrinho.delete(sku);
+        this.estoque.adicionarItem(sku, quantidade);
+    }
 
 	alterarQuantidade(sku, novaQuantidade) {
-		// TODO
-		throw new Error("TODO: implementar alterarQuantidade");
-	}
+        if (!this.carrinho.has(sku)) {
+            throw new Error("Item não encontrado no carrinho!");
+        }
+        const quantidadeAtual = this.carrinho.get(sku);
+        const diferenca = novaQuantidade - quantidadeAtual;
+
+        if (diferenca > 0) {
+            // isso aumenta a quantidade
+            this.adicionarItem(sku, diferenca);
+        } else if (diferenca < 0) {
+            // isso diminui a quantidade
+            this.removerItem(sku, -diferenca);
+        }   
+    
+    }
 
 	listarItens() {
-		// TODO
-		throw new Error("TODO: implementar listarItens");
+        const itens = [];
+        for (const [sku, quantidade] of this.carrinho.entries()) {
+            const produto = this.catalogo.getProduto(sku);
+            if (produto) {
+                itens.push(new ItemCarrinho({
+                    sku,
+                    quantidade,
+                    precoUnitario: produto.preco
+                }));
+            }
+        }
+        return itens;   
 	}
 
 	getSubtotal() {
-		// TODO
-		throw new Error("TODO: implementar getSubtotal");
+        let subtotal = 0;
+        for (const [sku, quantidade] of this.carrinho.entries()) {
+            const produto = this.catalogo.getProduto(sku);
+            if (produto) {
+                subtotal += produto.preco * quantidade;
+            }
+        }
+        return round2(subtotal);   
 	}
 }
 
 
- const catalogo = new Catalogo();
- const estoque = new Estoque();
-const carrinho = new CarrinhoDeCompras({
+    const catalogo = new Catalogo();
+    const estoque = new Estoque();
+    const carrinho = new CarrinhoDeCompras({
     catalogo: catalogo,
     estoque: estoque})
 
-class Garrafa {
-    constructor(conteudo) {
-        this.conteudo = conteudo;
-    }
-
-    setConteudo(novoConteudo) {
-        this.conteudo = novoConteudo;
-    }
-
-    servir () {
-        console.log("Servindo" + this.conteudo)
-    }
-}
-
-const garrafaDoBruno = new Garrafa("agua");
-const garrafaDoPaulo = new Garrafa("vodka");
-
-garrafaDoPaulo.conteudo = "vinho"
-garrafaDoPaulo.servir()
-
-garrafaDoPaulo.servir()
-
-
-class CarrinhoDeCompras {
-    constructor(estoqueAtual) {
-        this.estoque = estoqueAtual;
-    }
-
-    getQuantidade(sku) {
-        throw new Error();
-    }
-
-    definirQuantidade(sku, quantidade) {
-        throw new Error();
-    }
-
-    adicionarItem(sku, quantidade) {
-       assertNonNegativeInt(quantidade, "Quantidade a ser adicionada");
-        const quantidadeAtual = this.getQuantidade(sku);
-        this.definirQuantidade(sku, quantidadeAtual + quantidade);
-    }
-
-    garantirDisponibilidade(sku, quantidade) {
-        throw new Error();
-    }
-
-    removerItem(sku, quantidade) {
-        this.garantirDisponibilidade(sku, quantidade);
-        const estoqueAtual = this.getQuantidade(sku);
-        const novoEstoque = estoqueAtual - quantidade;
-
-        if (novoEstoque === 0) {
-            
-
-
-
-
-            this.estoque.delete(sku);
-        } else {
-            this.estoque.set(sku, novoEstoque)
-        }
-        console.logo(`Removido ${quantidae} do SKU ${sku}. Saldo atual: ${novoEstoque}`);
-    }
-
-    alterarQuantidade(sku, novaQuantidade) {
-        this.novaQuantidade(sku, novaQuantidade);
-        const novaQuantidade = ("Qual quantidade deseja levar?")
-
-        
-    
-    
-    }
-     listarItens() {
-        // TODO
-        throw new Error("TODO: implementar listarItens");
-    }
-
-    getSubtotal() {
-        // TODO
-        throw new Error("TODO: implementar getSubtotal");
-    }
-}
-
-// ==========================================
+    // ==========================================
 // PARTE 2 - Regras de preço (promoções)
 // ==========================================
 
@@ -480,9 +429,7 @@ class CarrinhoDeCompras {
 
 class MotorDePrecos {
     constructor({ catalogo }) {
-        // TODO
-        throw new Error("TODO: implementar MotorDePrecos");
-    }
+            this.catalogo = catalogo;}
 
     calcular({ cliente, itens, cupomCodigo }) {
         // TODO
@@ -534,8 +481,8 @@ class Pedido {
 
 class CaixaRegistradora {
     constructor({ catalogo, estoque, motorDePrecos }) {
-        // TODO
-        throw new Error("TODO: implementar CaixaRegistradora");
+        
+    
     }
 
     fecharCompra({ cliente, carrinho, cupomCodigo = null, numeroDeParcelas = 1 }) {
